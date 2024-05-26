@@ -10,7 +10,10 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {
+    "production": { 
+      "android": {
+        "buildType": "apk"
+      },
       "env": {
         "EXPO_PUBLIC_API_KEY": "AIzaSyDxxQwFaAtj9_Ov1hUttRHEcfm7RbGCQzk",
         "EXPO_PUBLIC_APP_ID": "1:811099692365:web:ab239b8644fdfe15c4ab04",
