@@ -1,8 +1,28 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
-import React from 'react'
+import React, {useState} from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
+import { useAuth } from '@/context/AuthContext'
+import { useRouter } from 'expo-router'
 
 const index = () => {
+  const {signUp} = useAuth();
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const handleSubmit = async () => {
+    try{
+        setLoading(true);
+        await signUp(email, password);
+        router.push('/exam');
+    }
+    catch(e: any){
+        alert(e.message);
+    }
+    finally{
+        setLoading(false);
+    }
+  }
   return (
     <View style={styles.container}>
         <LinearGradient colors={['#23416D', '#1F70EB']} style={styles.gradient}
@@ -11,14 +31,15 @@ const index = () => {
             <View style={styles.wrapper}>
                 <View style={styles.card}>
                     <Text style={styles.heading}>Retinoscan</Text>
-                    <TextInput style={styles.input} placeholder='email'/>
-                    <TextInput style={styles.input} placeholder='password'/>
-                    <Pressable style={styles.button}>
+                    <TextInput style={styles.input} placeholder='email' onChangeText={setEmail} value={email} inputMode='email'/>
+                    <TextInput style={styles.input} placeholder='password' onChangeText={setPassword} value={password} secureTextEntry/>
+                    <Pressable style={styles.button} onPress={handleSubmit}>
                         <Text style={{color: 'white', textAlign: 'center', fontWeight: 'bold', fontSize: 18}}>Signup</Text>
                     </Pressable>
                 </View>
             </View>
         </View>
+        {loading && <Text style={{color: 'white', width: 330, textAlign: 'center', paddingVertical: 10, fontSize: 20}}>Logging in...</Text>}
     </View>
   )
 }

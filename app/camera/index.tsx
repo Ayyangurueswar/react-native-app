@@ -3,7 +3,8 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import { View, Text, Button, Pressable, ImageBackground } from 'react-native';
 import Slider from '@react-native-community/slider';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
+import { useAuth } from '@/context/AuthContext';
 
 const index = () => {
   const [permission, requestPermission] = useCameraPermissions();
@@ -11,6 +12,24 @@ const index = () => {
   const [mode, setMode] = useState('manual');
   const cameraRef = useRef(null);
   const [photo, setPhoto] = useState();
+  const router = useRouter();
+  const {uploadImage} = useAuth();
+  const [loading, setLoading] = useState(false);
+  const handleSubmit = async () => {
+    try{
+      if(photo){
+        setLoading(true)
+        const image = await fetch(photo);
+        const blob = await image.blob();
+        await uploadImage(blob);
+        setLoading(false);
+        router.push('/patient');
+      }
+    }
+    catch(e: any){
+      alert(e.message);
+    }
+  }
   if(!permission){
     return <View />; 
   }
@@ -27,7 +46,11 @@ const index = () => {
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <View style={{height: 100, width: 400, marginTop: 50, flex: 1, alignItems: 'center', paddingHorizontal: 40,}}>
                 <Pressable style={{paddingHorizontal: 20, paddingVertical: 10, borderRadius: 40, borderColor: 'white', borderWidth: 2, marginLeft: 'auto'}}
-                onPress={() => {setRecording(false)}}>
+                onPress={() => {
+                  if(photo){
+                    setRecording(false);
+                  }
+                }}>
                     <Text style={{color: 'white', fontWeight: '700'}}>Done</Text>
                 </Pressable>
             </View>
@@ -89,13 +112,12 @@ const index = () => {
             <Pressable style={{width: 130, height: 50, backgroundColor: '#FF9901', borderRadius: 5}} onPress={() => {setRecording(true)}}>
               <Text style={{color: 'white', margin: 'auto'}}>Retake</Text>
             </Pressable>
-            <Link href='/patient' asChild>
-              <Pressable style={{width: 130, height: 50, backgroundColor: '#1DCD39', borderRadius: 5}}>
-                <Text style={{color: 'white', margin: 'auto'}}>Save</Text>
-              </Pressable>
-            </Link>
+            <Pressable style={{width: 130, height: 50, backgroundColor: '#1DCD39', borderRadius: 5}} onPress={handleSubmit}>
+              <Text style={{color: 'white', margin: 'auto'}}>Save</Text>
+            </Pressable>
           </View>
         </View>
+        {loading && <Text style={{marginTop: 20, textAlign: 'center', color: 'white'}}>Uploading image, Please wait...</Text>}
       </View>
     )
   }

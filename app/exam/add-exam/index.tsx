@@ -12,7 +12,11 @@ const index = () => {
         start={{x: 0, y: 0}} end={{x: 0.5, y: 0.5}}/>
         <View style={{height: 100}}>
             <View style={styles.header}>
-                <FontAwesome6 name="less-than" size={24} color="white" style={{marginRight: 'auto'}}/>
+                <Link href='/exam' asChild>
+                    <Pressable>
+                        <FontAwesome6 name="less-than" size={24} color="white" style={{marginRight: 'auto'}}/>
+                    </Pressable>
+                </Link>
                 <Text style={{color: 'white', fontWeight: '600', fontSize: 20, width: 350, textAlign: 'center'}}>Add Exam</Text>
             </View>
         </View>
