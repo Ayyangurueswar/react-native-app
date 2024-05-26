@@ -1,11 +1,31 @@
-import React from 'react'
-import { View, Text, StyleSheet, Pressable, TextInput } from 'react-native'
+import React, {useEffect} from 'react'
+import { View, Text, StyleSheet, Pressable, TextInput, BackHandler, Alert } from 'react-native'
 import  FontAwesome6  from '@expo/vector-icons/FontAwesome6'
 import { FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient'
 import { Link } from 'expo-router';
 
 const index = () => {
+    useEffect(() => {
+        const backAction = () => {
+          Alert.alert('Hold on!', 'Are you sure you want to go back?', [
+            {
+              text: 'Cancel',
+              onPress: () => null,
+              style: 'cancel',
+            },
+            {text: 'YES', onPress: () => BackHandler.exitApp()},
+          ]);
+          return true;
+        };
+    
+        const backHandler = BackHandler.addEventListener(
+          'hardwareBackPress',
+          backAction,
+        );
+    
+        return () => backHandler.remove();
+      }, []);
   return (
     <View style={styles.container}>
         <LinearGradient colors={['#23416D', '#1F70EB']} style={styles.gradient}
